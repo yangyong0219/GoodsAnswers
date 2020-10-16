@@ -1,4 +1,5 @@
-package java.it.test.simple;
+package it.test.simple;
 
 public class OthersSimpleAnswers {
+
 }
