@@ -240,9 +240,178 @@ public class MySimpleAnswers {
 
     }
 
+    public int removeDuplicates(int[] nums) {
+        if (nums.length==0) return 0;
+        int j = 0;
+        for (int i = 1; i < nums.length; i++) {
+            if (nums[j] != nums[i]) {
+                j++;
+                nums[j] = nums[i];
+            }
+        }
+        return j + 1;
+
+    }
+
+    public int removeElement(int[] nums, int val) {
+
+        int j = 0;
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] != val) {
+                nums[j] = nums[i];
+                j++;
+            }
+        }
+        return j;
+    }
+
+    public void nextPermutation(int[] nums) {
+        int len = nums.length;
+        boolean b = true;
+        for (int i = len - 1; i > 0; i--) {
+            if (nums[i - 1] < nums[i]) {
+                b = false;
+                int temp = nums[i-1];
+                int j = len-1;
+                while (j >i-1) {
+                    if (nums[j] > temp) {
+                        nums[i - 1] = nums[j];
+                        nums[j] = temp;
+                        break;
+                    }
+                    j--;
+                }
+                Arrays.sort(nums, i, len);
+                break;
+            }
+        }
+        if (b) {
+            Arrays.sort(nums);
+        }
+    }
+
+    //###33. 思路: 二分法分成的两部分始终有一部分是有序的  我们只需要用有序的那一部分去判断边界就可以
+    public int search(int[] nums, int target) {
+        int len = nums.length;
+        if (len == 0) return -1;
+        if (len == 1) return nums[0] == target ? 0 : -1;
+        int l = 0;
+        int r = len - 1;
+        while (l <= r) {
+            int mid = (l + r) / 2;
+            if (nums[mid] == target) return mid;
+            if (nums[0] <= nums[mid]) {
+                //有序
+                if (target >= nums[0] && target < nums[mid]) {
+                    r = mid - 1;
+                } else {
+                    l = mid + 1;
+                }
+            } else {
+                //有序
+                if (target > nums[mid] && target <= nums[r]) {
+                    l = mid + 1;
+                } else {
+                    r = mid - 1;
+                }
+            }
+
+        }
+        return -1;
+    }
+
+    public int[] searchRange(int[] nums, int target) {
+        if (nums.length==0) return new int[]{-1, -1};
+        if (nums.length==1) return target == nums[0] ? new int[]{0, 0} : new int[]{-1, -1};
+        int leftRange = getLeft(nums, target);
+        if (leftRange == -1) return new int[]{-1, -1};
+        int rightRange = getRight(nums, target);
+        return new int[]{leftRange, rightRange};
+    }
+
+    private int getLeft(int[] nums, int target) {
+        int l = 0;
+        int r = nums.length - 1;
+        while (l <= r) {
+            int mid = (l + r) / 2;
+            if (target == nums[mid]) {
+                r = mid - 1;
+            } else if (target > nums[mid]) {
+                l = mid + 1;
+            } else if (target < nums[mid]) {
+                r = mid - 1;
+            }
+        }
+        if (l >= nums.length || nums[l] != target) return -1;
+        return l;
+    }
+
+    private int getRight(int[] nums, int target) {
+        int l = 0;
+        int r = nums.length - 1;
+        while (l <= r) {
+            int mid = (l + r) / 2;
+            if (target == nums[mid]) {
+                l = mid + 1;
+            } else if (target > nums[mid]) {
+                l = mid + 1;
+            } else if (target < nums[mid]) {
+                r = mid - 1;
+            }
+        }
+        return r;
+
+    }
+
+    public int searchInsert(int[] nums, int target) {
+        int l = 0;
+        int r = nums.length - 1;
+        while (l <= r) {
+            int mid = ((r - l) >> 1) + l;
+            if (nums[mid] >= target) {
+                r = mid - 1;
+            } else {
+                l = mid + 1;
+            }
+        }
+        return l;
+
+    }
+
+    public List<List<Integer>> combinationSum(int[] candidates, int target) {
+        int len = candidates.length;
+        List<List<Integer>> res = new ArrayList<>();
+        if (len == 0) {
+            return res;
+        }
+        Deque<Integer> path = new ArrayDeque();
+        dfs(0, len, res, path, target, candidates);
+        return res;
+
+    }
+
+    private void dfs(int begin, int len, List<List<Integer>> res, Deque<Integer> path, int target, int[] candidates) {
+        if (target < 0) return;
+        if (target == 0) {
+            res.add(new ArrayList<>(path));
+            return;
+        }
+
+        for (int i = begin; i < len; i++) {
+            path.addLast(candidates[i]);
+            dfs(i, len, res, path, target-candidates[i], candidates);
+            path.removeLast();
+
+        }
+    }
+
+
     public static void main(String[] args) {
         MySimpleAnswers mySimpleAnswers = new MySimpleAnswers();
-        System.out.println("....." + mySimpleAnswers.fourSum(new int[]{-5,-5,-3,-1,0,2,4,5}, -7));
+        int[] candidates = new int[]{2, 3, 6, 7};
+        int target = 7;
+        List<List<Integer>> res = mySimpleAnswers.combinationSum(candidates, target);
+        System.out.println("输出 => " + res);
 
     }
 }
