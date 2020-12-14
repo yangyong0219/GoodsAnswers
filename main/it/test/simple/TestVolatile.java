@@ -5,35 +5,29 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class TestVolatile {
-    public static volatile int race = 0;
+    public static volatile AtomicInteger race = new AtomicInteger(0);
     public static int a = 0;
     public static void increase() {
-        race++;
+        race.getAndIncrement();
     }
 
     public static final int THREADS_COUNT = 20;
     public static void main(String[] args) throws InterruptedException {
         Thread[] threads = new Thread[THREADS_COUNT];
-        threads[0] = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (a > 10) {
-                    System.out.println(a);
+        for (int i = 0; i < THREADS_COUNT; i++) {
+            threads[i] = new Thread(() -> {
+                for (int j = 0; j < 10000; j++) {
+                    increase();
                 }
-            }
-        });
-        threads[1] = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (a<100) {
-                    a++;
-                    System.out.println("a--" + a);
-                }
-            }
-        });
-        AtomicInteger a = new AtomicInteger(10);
-        a.incrementAndGet();
-        System.out.println(a);
+            });
+            threads[i].start();
+        }
+        //等待所有线程执行完成, Idea因为会自动创建一条名为Monitor Ctrl-Break的线程
+        //所以会导致while循环无法结束, 此处用>2
+        for (int i = 0; i < THREADS_COUNT; i++) {
+            threads[i].join();
+        }
+        System.out.println(race);
 
     }
 
