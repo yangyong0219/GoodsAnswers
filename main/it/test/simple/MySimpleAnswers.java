@@ -405,13 +405,63 @@ public class MySimpleAnswers {
         }
     }
 
+    public void rotate(int[][] matrix) {
+        int n = matrix.length;
+        for (int i = 0; i < n; i++) {
+            for (int j = i; j < n; j++) {
+                int temp = matrix[i][j];
+                matrix[i][j] = matrix[j][i];
+                matrix[j][i] = temp;
+            }
+        }
+
+        for (int i = 0; i < matrix.length; i++) {
+            reverse(matrix[i]);
+        }
+
+        System.out.println(Arrays.deepToString(matrix));
+
+    }
+
+    private void reverse(int[] matrix) {
+        for (int i = 0; i < matrix.length >> 1; i++) {
+            int temp = matrix[i];
+            matrix[i] = matrix[matrix.length - i-1];
+            matrix[matrix.length - i-1] = temp;
+        }
+    }
+
+    public int fib(int N) {
+        if (N == 1 | N == 2) {
+            return 1;
+        }
+        int pre = 1;
+        int pre2 = 1;
+        int res = 0;
+        for (int i = 3; i <= N; i++) {
+            res = pre + pre2;
+            pre2 = pre;
+            pre = res;
+        }
+        return res;
+
+    }
+
+    public int maxSubArray(int[] nums) {
+        int pre = 0;
+        int maxAns = nums[0];
+        for (int x : nums) {
+            pre = Math.max(pre + x, pre);
+            maxAns = Math.max(pre, maxAns);
+        }
+        return maxAns;
+    }
+
 
     public static void main(String[] args) {
         MySimpleAnswers mySimpleAnswers = new MySimpleAnswers();
-        int[] candidates = new int[]{2, 3, 6, 7};
-        int target = 7;
-        List<List<Integer>> res = mySimpleAnswers.combinationSum(candidates, target);
-        System.out.println("输出 => " + res);
+        System.out.println(mySimpleAnswers.fib(8));
+        Map<String, Object> map = new HashMap<>();
 
     }
 }
