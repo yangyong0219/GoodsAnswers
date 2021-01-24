@@ -5,6 +5,10 @@ package it.test.simple;
  */
 public class TestMath {
 
+    public static int getFinx(int x) {
+        if (x==1||x==2) return 1;
+        return getFinx(x - 1) + getFinx(x - 2);
+    }
 
     public static int getFin(int x) {
         int[] note = new int[x+1];
@@ -17,10 +21,6 @@ public class TestMath {
         return value;
     }
 
-    public static int getFinx(int x) {
-        if (x==1||x==2) return 1;
-        return getFinx(x - 1) + getFinx(x - 2);
-    }
 
     public static int getFinz(int x) {
         if (x==1||x==2) return 1;
@@ -43,13 +43,14 @@ public class TestMath {
         }
         return value;
     }
+
     public static void main(String[] args) {
         long l = System.currentTimeMillis();
         for (int i = 1; i < 40; i++) {
             System.out.println(getFiny(i));
         }
         long l1 = System.currentTimeMillis();
-        System.out.println((l1-l));;
+        System.out.println((l1-l));
 
     }
 }
