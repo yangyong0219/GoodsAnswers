@@ -62,8 +62,8 @@ public class TestThread {
 //    }
 
         TestThread t = new TestThread();
-//        t.printAB();
-        t.doSynchronized();
+        t.printAB();
+//        t.doSynchronized();
 //        t.printTwo();
 //        t.doAtomicInteger();
     }
@@ -159,49 +159,42 @@ public class TestThread {
     }
 
 
-    private static final int MAX_PRINT_NUM = 100;
-    private static int count = 1;
-
+    static int seq = 1;
     public void printAB() {
-        // 声明CountDownLatch
-        CountDownLatch countDownLatch = new CountDownLatch(1);
-        new Thread(() -> {
-            while (count <= MAX_PRINT_NUM) {
-                if (count % 3 == 0) {
-                    System.out.println("t1:" + count);
-                    count++;
+        Object lock = new Object();
+        new Thread(()->{
+            while (seq < 100) {
+                synchronized (lock){
+                    if (seq % 2 == 0) {
+                        System.out.println("t1: " + seq++);
+                        lock.notifyAll();
+                    } else {
+                        try {
+                            lock.wait();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
                 }
             }
-            // 偶数线程执行完则计数器减一
-            countDownLatch.countDown();
         }).start();
 
-        new Thread(() -> {
-            while (count <= MAX_PRINT_NUM) {
-                if (count % 3 == 1) {
-                    System.out.println("t2:" + count);
-                    count++;
+        new Thread(()->{
+            while (seq < 100) {
+                synchronized (lock){
+                    if (seq % 2 == 1) {
+                        System.out.println("t2: " + seq++);
+                        lock.notifyAll();
+                    } else {
+                        try {
+                            lock.wait();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
                 }
             }
-            // 奇数线程执行完则计数器减一
-            countDownLatch.countDown();
         }).start();
-
-        new Thread(() -> {
-            while (count <= MAX_PRINT_NUM) {
-                if (count % 3 == 2) {
-                    System.out.println("t3:" + count);
-                    count++;
-                }
-            }
-            // 奇数线程执行完则计数器减一
-            countDownLatch.countDown();
-        }).start();
-
-        try {
-            countDownLatch.await();
-        } catch (Exception e) {
-        }
     }
 
 }

@@ -126,27 +126,27 @@ public class Solution {
         //四个节点
         //tmp->start->end->下一个
         //每次让tmp指向end, start指向end的下一个, end指向start, 再把tmp往前移动一位
-        // ListNode pre = new ListNode(0);
-        // pre.next = head;
-        // ListNode tmp = pre;
-        // while(tmp.next!=null && tmp.next.next!= null){
-        //     ListNode start = tmp.next;
-        //     ListNode end = tmp.next.next;
-        //     tmp.next = end;
-        //     start.next = end.next;
-        //     end.next = start;
-        //     tmp = start;
-        // }
-        // return pre.next;
+         ListNode pre = new ListNode(0);
+         pre.next = head;
+         ListNode tmp = pre;
+         while(tmp.next!=null && tmp.next.next!= null){
+             ListNode start = tmp.next;
+             ListNode end = tmp.next.next;
+             tmp.next = end;
+             start.next = end.next;
+             end.next = start;
+             tmp = start;
+         }
+         return pre.next;
 
         //递归
-        if (head == null || head.next == null) {
-            return head;
-        }
-        ListNode next = head.next;
-        head.next = swapPairs(next.next);
-        next.next = head;
-        return next;
+//        if (head == null || head.next == null) {
+//            return head;
+//        }
+//        ListNode next = head.next;
+//        head.next = swapPairs(next.next);
+//        next.next = head;
+//        return next;
 
     }
 
