@@ -1,0 +1,15 @@
+package it.test.simple;
+
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        String s = sc.nextLine();
+        String[] split = s.split(" ");
+        String ans = "";
+        for (int i = 0; i < split.length; i++) {
+            if ()
+        }
+    }
+}

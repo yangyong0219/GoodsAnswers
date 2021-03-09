@@ -3,50 +3,38 @@ package it.test.simple.jichu;
 import java.util.*;
 
 public class Solution {
-    //两数之和
-    public int[] twoSum(int[] nums, int target) {
-        Map<Integer, Integer> hashtable = new HashMap<Integer, Integer>();
-        for (int i = 0; i < nums.length; ++i) {
-            if (hashtable.containsKey(target - nums[i])) {
-                return new int[]{hashtable.get(target - nums[i]), i};
-            }
-            hashtable.put(nums[i], i);
-        }
-        return new int[0];
-    }
 
 
     //盛水最多的容器
     public int maxArea(int[] height) {
-        //1. 双指针
-        int i = 0;
-        int j = height.length - 1;
+        int i = 0; int j = height.length-1;
         int ans = 0;
         while (i < j) {
-            int area = (j - i) * Math.min(height[j], height[i]);
-            ans = Math.max(ans, area);
-            if (height[j] > height[i]) {
+            ans = Math.max(ans, Math.min(height[j], height[i]) * (j-i));
+            if (height[j] >= height[i]) {
                 i++;
             } else {
                 j--;
             }
         }
-        return ans;
 
+        return ans;
     }
 
     //移动零
     public void moveZeroes(int[] nums) {
         //用快指针遍历数组, 慢指针去填充不为0的数值
         //最后慢指针之后的数据全为0
-        int j = 0;
-        for (int i = 0; i < nums.length; i++) {
-            if (nums[i] != 0) {
-                nums[j++] = nums[i];
+
+        int slow = 0;
+        for (int fast = 0; fast<nums.length; fast++){
+            if (nums[fast]!=0){
+                nums[slow] = nums[fast];
+                slow++;
             }
         }
-        for (; j < nums.length; j++) {
-            nums[j] = 0;
+        for (; slow < nums.length; slow++) {
+            nums[slow] = 0;
         }
     }
 
@@ -68,55 +56,79 @@ public class Solution {
     //三数之和
 
     public List<List<Integer>> threeSum(int[] nums) {
+//        List<List<Integer>> ans = new ArrayList<>();
+//        if (nums.length < 3 || nums == null) {
+//            return ans;
+//        }
+//        Arrays.sort(nums);
+//        for (int i = 0; i < nums.length - 1; i++) {
+//            if (nums[i] > 0) break;
+//            if (i > 0 && nums[i] == nums[i - 1]) continue;
+//            int j = i + 1;
+//            int k = nums.length - 1;
+//            while (j < k) {
+//                if (nums[i] + nums[k] + nums[j] > 0) {
+//                    k--;
+//                } else if (nums[i] + nums[j] + nums[k] < 0) {
+//                    j++;
+//                } else {
+//                    ans.add(Arrays.asList(nums[i], nums[j], nums[k]));
+//                    k--;
+//                    j++;
+//                    while (j < k && nums[j] == nums[j - 1]) j++;
+//                    while (j < k && nums[k] == nums[k + 1]) k--;
+//                }
+//            }
+//        }
+//        return ans;
         List<List<Integer>> ans = new ArrayList<>();
-        if (nums.length < 3 || nums == null) {
+        if (nums == null || nums.length < 3) {
             return ans;
         }
         Arrays.sort(nums);
-        for (int i = 0; i < nums.length - 1; i++) {
-            if (nums[i] > 0) break;
-            if (i > 0 && nums[i] == nums[i - 1]) continue;
-            int j = i + 1;
-            int k = nums.length - 1;
-            while (j < k) {
-                if (nums[i] + nums[k] + nums[j] > 0) {
-                    k--;
-                } else if (nums[i] + nums[j] + nums[k] < 0) {
+        for (int i = 0; i< nums.length-1; i++){
+            if (nums[i]>0) break;
+            if (i>0 && nums[i] == nums[i-1]) continue;
+            int j = i+1;
+            int k = nums.length-1;
+            while(j<k){
+                if (nums[i]+nums[j]+nums[k] <0){
                     j++;
-                } else {
+                } else if(nums[i]+nums[j]+nums[k]>0){
+                    k--;
+                } else{
                     ans.add(Arrays.asList(nums[i], nums[j], nums[k]));
-                    k--;
-                    j++;
-                    while (j < k && nums[j] == nums[j - 1]) j++;
-                    while (j < k && nums[k] == nums[k + 1]) k--;
+                    j++;k--;
+                    while(j<k && nums[j] == nums[j-1]) j++;
+                    while(j<k && nums[k] == nums[k+1]) k--;
                 }
             }
         }
-        return ans;
+        return  ans;
     }
 
     //反转链表
     public ListNode reverseList(ListNode head) {
         //快慢指针, 快指针指向下一个要执行的node, 慢指针将结果结果指向前一个
-        ListNode pre = null;
-        ListNode curr = head;
-        while (curr != null) {
-            ListNode temp = curr.next;
-            curr.next = pre;
-            pre = curr;
-            curr = temp;
-        }
-        return pre;
+//        ListNode pre = null;
+//        ListNode curr = head;
+//        while (curr != null) {
+//            ListNode temp = curr.next;
+//            curr.next = pre;
+//            pre = curr;
+//            curr = temp;
+//        }
+//        return pre;
 
 
         // //递归
-        // if(head == null || head.next == null){
-        //     return head;
-        // }
-        // ListNode curr = reverseList(head.next);
-        // head.next.next = head;
-        // head.next = null;
-        // return curr;
+         if(head == null || head.next == null){
+             return head;
+         }
+         ListNode curr = reverseList(head.next);
+         head.next.next = head;
+         head.next = null;
+         return curr;
 
     }
 
@@ -139,6 +151,21 @@ public class Solution {
          }
          return pre.next;
 
+        //假如有1234四个节点,可以让1指向3  2指向4   再让3指向2  那么就是1324  就可以交换中间两个,再继续往后替换就可以
+        //因为第一个节点没有办法替换,所以新建一个节点
+//        ListNode pre = new ListNode(0);
+//        pre.next = head;
+//        ListNode temp = pre;
+//        while(temp.next!=null && temp.next.next != null){
+//            ListNode start = temp.next;
+//            ListNode end = temp.next.next;
+//            temp.next = start;
+//            start.next = end.next;
+//            end.next = start;
+//            temp = start;
+//        }
+//        return pre.next;
+
         //递归
 //        if (head == null || head.next == null) {
 //            return head;
@@ -154,31 +181,27 @@ public class Solution {
 
     public boolean hasCycle(ListNode head) {
         //1. Hash法
-        Set<ListNode> exist = new HashSet<>();
-        while(head != null){
-            if(!exist.add(head)){
-                return true;
-            }
-            head = head.next;
-        }
-        return false;
+//        Set<ListNode> exist = new HashSet<>();
+//        while(head != null){
+//            if(!exist.add(head)){
+//                return true;
+//            }
+//            head = head.next;
+//        }
+//        return false;
 
         //2. 快慢指针
-        // if(head == null || head.next == null){
-        //     return false;
-        // }
-        // ListNode slow = head;
-        // ListNode fast = head;
-        // do{
-        //     if(fast == null || fast.next == null){
-        //         return false;
-        //     }
-        //     fast = fast.next.next;
-        //     slow = slow.next;
-
-        // } while(slow != fast);
-
-        // return true;
+        if (head == null || head.next == null){
+            return false;
+        }
+        ListNode slow = head;
+        ListNode fast = head;
+        do {
+            if (fast == null || fast.next == null) return false;
+            fast = fast.next.next;
+            slow = slow.next;
+        } while (slow != fast);
+        return true;
 
     }
 
@@ -188,17 +211,17 @@ public class Solution {
     //环形链表
     public ListNode detectCycle(ListNode head) {
         //1. Hash表解法
-        // Set<ListNode> exist = new HashSet<>();
-        // if(head == null || head.next == null) return null;
-        // while(head!=null){
-        //     if(exist.contains(head.next)){
-        //         return head;
-        //     } else {
-        //         exist.add(head.next);
-        //     }
-        //     head = head.next;
-        // }
-        // return null;
+//         Set<ListNode> exist = new HashSet<>();
+//         if(head == null || head.next == null) return null;
+//         while(head!=null){
+//             if(exist.contains(head.next)){
+//                 return head;
+//             } else {
+//                 exist.add(head.next);
+//             }
+//             head = head.next;
+//         }
+//         return null;
 
         //2. 双指针
         //假设环之前的节点个数为a个, 环的节点个数为b,
@@ -209,16 +232,33 @@ public class Solution {
         //慢指针每一次到环的起点所走的路程为a + nb
         //第一次相遇时a已经走了nb个节点, 则只需要再走a个节点就可以到环起始的位置
         //a = ? 可以让fast再指向head, 每次走一步, 走到环其实位置刚好是a步, 此时fast与slow再次相遇
-        if(head == null || head.next == null) return null;
-        ListNode fast = head, slow = head;
-        while(true){
-            if(fast == null || fast.next == null) return null;
+//        if(head == null || head.next == null) return null;
+//        ListNode fast = head, slow = head;
+//        while(true){
+//            if(fast == null || fast.next == null) return null;
+//            fast = fast.next.next;
+//            slow = slow.next;
+//            if(fast == slow) break;
+//        }
+//        fast = head;
+//        while(fast!=slow){
+//            fast = fast.next;
+//            slow = slow.next;
+//        }
+//        return fast;
+
+        if (head == null || head.next == null){
+            return null;
+        }
+        ListNode slow = head;
+        ListNode fast = head;
+        do {
+            if (fast == null || fast.next == null) return null;
             fast = fast.next.next;
             slow = slow.next;
-            if(fast == slow) break;
-        }
+        } while (slow != fast);
         fast = head;
-        while(fast!=slow){
+        while(fast != slow){
             fast = fast.next;
             slow = slow.next;
         }
@@ -232,20 +272,27 @@ public class Solution {
         //思路: 排序数组
         //采用快慢指针, 慢指针始终指向第一个不重复的数据
         //快指针往后移动, 遇到不一样的, 就放到i+1的位置, 并把i+1
-        if(nums.length <= 1) return nums.length;
+//        if(nums.length <= 1) return nums.length;
+//
+//        int i = 0;
+//        int j = 1;
+//        while(j<nums.length){
+//            if(nums[j]!=nums[i]){
+//                i++;
+//                nums[i] = nums[j];
+//            }
+//            j++;
+//        }
+//        return i+1;
 
+        if (nums.length <=1) return nums.length;
         int i = 0;
-        int j = 1;
-        while(j<nums.length){
-            if(nums[j]!=nums[i]){
-                i++;
-                nums[i] = nums[j];
+        for (int j = i+1; j < nums.length; j++) {
+            if (nums[j] != nums[i]){
+                nums[++i] = nums[j];
             }
-            j++;
         }
         return i+1;
-
-
     }
     //旋转数组
 
@@ -289,17 +336,31 @@ public class Solution {
         ListNode pre = new ListNode(-1);
         ListNode move = pre;
         while(l1 != null && l2 != null){
-            if(l1.val>=l2.val){
-                move.next = l2;
+            if (l1.val >= l2.val) {
+                move.next = l2.next;
                 l2 = l2.next;
             } else {
-                move.next = l1;
+                move.next = l1.next;
                 l1 = l1.next;
             }
             move = move.next;
         }
-        move.next = l1 == null ? l2 : l1;
+        move.next = l1 == null? l2: l1;
         return pre.next;
+//        ListNode pre = new ListNode(-1);
+//        ListNode move = pre;
+//        while(l1 != null && l2 != null){
+//            if(l1.val>=l2.val){
+//                move.next = l2;
+//                l2 = l2.next;
+//            } else {
+//                move.next = l1;
+//                l1 = l1.next;
+//            }
+//            move = move.next;
+//        }
+//        move.next = l1 == null ? l2 : l1;
+//        return pre.next;
 
 
     }
@@ -337,6 +398,9 @@ public class Solution {
 //        List<List<Integer>> lists = solution.threeSum(new int[]{-1, 0, 1, 2, -1, -4});
 //        System.out.println(lists);
 
+        int i1 = solution.removeDuplicates(new int[]{2, 2, 3, 4, 4, 5,5,5,5,6});
+        System.out.println(i1);
+
     }
 
 
@@ -357,5 +421,28 @@ public class Solution {
             this.val = val;
             this.next = next;
         }
+    }
+
+    //两数之和
+    public int[] twoSum(int[] nums, int target) {
+
+        //xunhuan
+//        for (int i = 0; i < nums.length-1; i++) {
+//            for (int j = i + 1; j < nums.length; j++) {
+//                if (nums[i] + nums[j] == target) {
+//                    return new int[]{i, j};
+//                }
+//            }
+//        }
+//        return new int[0];
+
+        Map<Integer, Integer> map = new HashMap<>();
+        for (int i = 0; i < nums.length; i++){
+            if (map.containsKey(target - nums[i])) {
+                return new int[]{map.get(target - nums[i]), i};
+            }
+            map.put(nums[i], i);
+        }
+        return new int[0];
     }
 }
