@@ -3,7 +3,7 @@ package it.test.simple.dp;
 import java.util.*;
 
 public class Solution {
-//    一个机器人位于一个 m x n 网格的左上角 （起始点在下图中标记为 “Start” ）。
+//    一个机器人位于一个 m x n网格的左上角 （起始点在下图中标记为 “Start” ）。
 //
 //    机器人每次只能向下或者向右移动一步。机器人试图达到网格的右下角（在下图中标记为 “Finish” ）。
 //
@@ -35,30 +35,6 @@ public class Solution {
         return dp[m - 1][n - 1];
     }
 
-    public int uniquePaths1(int m, int n) {
-        int[] pre = new int[n];
-        int[] cur = new int[n];
-        Arrays.fill(pre, 1);
-        Arrays.fill(cur,1);
-        for (int i = 1; i < m;i++){
-            for (int j = 1; j < n; j++){
-                cur[j] = cur[j-1] + pre[j];
-            }
-            pre = cur.clone();
-        }
-        return pre[n-1];
-    }
-
-    public int uniquePaths2(int m, int n) {
-        int[] cur = new int[n];
-        Arrays.fill(cur,1);
-        for (int i = 1; i < m;i++){
-            for (int j = 1; j < n; j++){
-                cur[j] += cur[j-1] ;
-            }
-        }
-        return cur[n-1];
-    }
 
 
     //最长公共自序列
@@ -84,8 +60,6 @@ public class Solution {
     }
 
 //给定一个字符串，找到它的第一个不重复的字符，并返回它的索引。如果不存在，则返回 -1。
-//
-// 
 //
 //示例：
 //

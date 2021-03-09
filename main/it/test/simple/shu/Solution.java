@@ -8,19 +8,20 @@ public class Solution {
     //中序遍历
 
     public List<Integer> inorderTraversal(TreeNode root) {
-        List<Integer> res = new ArrayList<Integer>();
-        inorder(root, res);
-        return res;
+        List<Integer> ans = new ArrayList<>();
+        middleSearch(ans, root);
+        return ans;
     }
 
-    public void inorder(TreeNode root, List<Integer> res) {
+    private void middleSearch(List<Integer> ans, TreeNode root) {
         if (root == null) {
             return;
         }
-        inorder(root.left, res);
-        res.add(root.val);
-        inorder(root.right, res);
+        middleSearch(ans, root.left);
+        ans.add(root.val);
+        middleSearch(ans, root.right);
     }
+
 
     //前序遍历
 
@@ -39,20 +40,22 @@ public class Solution {
         preorder(root.right, res);
     }
 
-    //N叉树后续
-    public List<Integer> postorder(Node root) {
-        LinkedList<Integer> ans = new LinkedList<>();
-        Stack<Node> s = new Stack<Node>();
-        if (root == null)
+    //2叉树前序迭代
+    public List<Integer> preOrder(TreeNode root) {
+        List<Integer> ans=new ArrayList<>();//结果集
+        Stack<TreeNode> stack=new Stack<>();
+        if(root==null){
             return ans;
-        s.push(root);
-
-        while (!s.isEmpty()) {
-            Node curr = s.pop();
-            ans.addFirst(curr.val);
-            for (Node child : curr.children) {
-                if (child != null)
-                    s.push(child);
+        }
+        stack.push(root);
+        while (!stack.isEmpty()){
+            TreeNode cur=stack.pop();
+            ans.add(cur.val);//加入当前元素
+            if(cur.right!=null){//将右子节点加入栈中(栈先进后出，先入右再入左,则先取左再取右)
+                stack.push(cur.right);
+            }
+            if(cur.left!=null){//将左子结点加入栈中
+                stack.push(cur.left);
             }
         }
         return ans;

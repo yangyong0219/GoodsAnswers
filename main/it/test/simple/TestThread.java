@@ -73,6 +73,7 @@ public class TestThread {
 
     private void doSynchronized() {
         int TOTAL = 100;
+        CountDownLatch countDownLatch = new CountDownLatch(2);
         ExecutorService executorService = Executors.newFixedThreadPool(2);
         executorService.execute(() -> {
             while (i <= TOTAL) {
@@ -89,6 +90,7 @@ public class TestThread {
                     }
                 }
             }
+            countDownLatch.countDown();
         });
         executorService.execute(() -> {
             while (i <= TOTAL) {
@@ -105,8 +107,14 @@ public class TestThread {
                     }
                 }
             }
+            countDownLatch.countDown();
         });
-        System.out.println("aaaaaa");
+        try {
+            countDownLatch.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println("打印结束aaaaaa");
 
     }
 
